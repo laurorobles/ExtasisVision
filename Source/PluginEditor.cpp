@@ -25,6 +25,17 @@ ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVis
     baseOctaveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.apvts, "BASE_OCTAVE", baseOctaveSlider);
 
+    // ComboBoxes
+    engineModeComboBox.addItemList (juce::StringArray{"Escaner Analitico", "Sintetizador RGB"}, 1);
+    addAndMakeVisible (engineModeComboBox);
+    engineModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+        audioProcessor.apvts, "ENGINE_MODE", engineModeComboBox);
+
+    scaleModeComboBox.addItemList (juce::StringArray{"Libre", "Cromatica", "Pentatonica Menor"}, 1);
+    addAndMakeVisible (scaleModeComboBox);
+    scaleModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+        audioProcessor.apvts, "SCALE_MODE", scaleModeComboBox);
+
     setSize (800, 600);
     startTimerHz (60); // 60 FPS repainting for the scanner
 }
@@ -72,7 +83,7 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     auto headerBounds = bounds.removeFromTop(60);
     g.setColour (ExtasisDesign::hudRed);
     g.setFont (ExtasisDesign::getFontTitle());
-    g.drawFittedText ("EXTASIS VISION", headerBounds, juce::Justification::centred, 1);
+    g.drawFittedText ("EXTASIS VISION", headerBounds.withWidth(250), juce::Justification::centredLeft, 1);
 
     // Controles (Footer)
     auto footerBounds = bounds.removeFromBottom(120);
@@ -120,7 +131,14 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
 void ExtasisVisionAudioProcessorEditor::resized()
 {
     auto bounds = getLocalBounds().reduced (ExtasisDesign::marginLarge);
-    bounds.removeFromTop(60); // Header
+    auto headerBounds = bounds.removeFromTop(60); 
+    
+    // Header comboboxes
+    headerBounds.removeFromLeft(200); // Espacio para el título "EXTASIS VISION"
+    auto combosBounds = headerBounds.reduced(0, 15);
+    engineModeComboBox.setBounds (combosBounds.removeFromLeft(150).reduced(5));
+    scaleModeComboBox.setBounds (combosBounds.removeFromLeft(150).reduced(5));
+
     auto footerBounds = bounds.removeFromBottom(120);
     
     auto leftKnob = footerBounds.removeFromLeft(footerBounds.getWidth() / 2);

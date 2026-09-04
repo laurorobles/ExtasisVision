@@ -11,6 +11,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout ExtasisVisionAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterInt> (
         "BASE_OCTAVE", "Octava Base", -2, 2, 0));
 
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        "ENGINE_MODE", "Motor", juce::StringArray{"Escaner Analitico", "Sintetizador RGB"}, 0));
+
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        "SCALE_MODE", "Escala", juce::StringArray{"Libre", "Cromatica", "Pentatonica Menor"}, 0));
+
     return { params.begin(), params.end() };
 }
 
@@ -59,6 +65,7 @@ void ExtasisVisionAudioProcessor::prepareToPlay (double sampleRate, int samplesP
 { 
     juce::ignoreUnused (sampleRate, samplesPerBlock); 
     currentPhase = 0.0f;
+    filterState = 0.0f;
 }
 void ExtasisVisionAudioProcessor::releaseResources() {}
 bool ExtasisVisionAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
@@ -90,49 +97,92 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     float sampleRate = (float) getSampleRate();
     if (sampleRate <= 0) sampleRate = 44100.0f;
 
-    // Calcular parámetros una vez por bloque para ahorrar CPU
-    int xPos = juce::jlimit (0, width - 1, (int)(scanPositionX * width));
-    float maxBrightness = 0.0f;
-    int brightestY = height / 2;
-    
-    for (int y = 0; y < height; ++y)
-    {
-        float brightness = currentImage.getPixelAt (xPos, y).getBrightness();
-        if (brightness > maxBrightness)
-        {
-            maxBrightness = brightness;
-            brightestY = y;
-        }
-    }
-    
-    // Mapeo Y -> Frecuencia (Abajo es grave, Arriba es agudo)
-    float normalizedY = 1.0f - ((float)brightestY / (float)height); 
-    
-    // Leer Octava de los parámetros
+    // Leer Parámetros
+    int engineMode = static_cast<int> (apvts.getRawParameterValue ("ENGINE_MODE")->load());
+    int scaleMode = static_cast<int> (apvts.getRawParameterValue ("SCALE_MODE")->load());
     int octaveShift = static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE")->load());
-    float freqMultiplier = std::pow (2.0f, (float)octaveShift);
-    
-    float minFreq = 50.0f * freqMultiplier;
-    float maxFreq = 2000.0f * freqMultiplier;
-    float currentFreq = minFreq + (maxFreq - minFreq) * normalizedY;
-    float phaseDelta = (currentFreq * juce::MathConstants<float>::twoPi) / sampleRate;
-
-    // Leer Velocidad de Escaneo
     float scanSpeed = apvts.getRawParameterValue ("SCAN_SPEED")->load();
 
-    // Gate: Si el píxel es muy oscuro, hacer silencio
-    float targetAmplitude = (maxBrightness > 0.05f) ? (maxBrightness * 0.3f) : 0.0f;
+    int xPos = juce::jlimit (0, width - 1, (int)(scanPositionX * width));
+    
+    float minFreq = 50.0f;
+    float maxFreq = 2000.0f;
+    float currentFreq = minFreq;
+    float targetAmplitude = 0.0f;
+    float filterCoeff = 1.0f; // 1.0 = Abierto
+
+    // Función Lambda para Cuantizar Frecuencia a Escala
+    auto quantizeFrequency = [](float freq, int mode, int octave) -> float {
+        float midiNote = 69.0f + 12.0f * std::log2 (freq / 440.0f);
+        int note = (int) std::round (midiNote);
+        if (mode == 2) // Pentatónica Menor (0, 3, 5, 7, 10)
+        {
+            int octaveBase = (note / 12) * 12;
+            int pitchClass = note % 12;
+            int pentatonicNotes[] = {0, 0, 3, 3, 3, 5, 5, 7, 7, 7, 10, 10};
+            note = octaveBase + pentatonicNotes[pitchClass];
+        }
+        note += (octave * 12);
+        return 440.0f * std::pow (2.0f, (note - 69.0f) / 12.0f);
+    };
+
+    if (engineMode == 0) // Escáner Analítico
+    {
+        float maxBrightness = 0.0f;
+        int brightestY = height / 2;
+        
+        for (int y = 0; y < height; ++y)
+        {
+            float brightness = currentImage.getPixelAt (xPos, y).getBrightness();
+            if (brightness > maxBrightness)
+            {
+                maxBrightness = brightness;
+                brightestY = y;
+            }
+        }
+        
+        float normalizedY = 1.0f - ((float)brightestY / (float)height); 
+        float rawFreq = minFreq + (maxFreq - minFreq) * normalizedY;
+        
+        currentFreq = (scaleMode == 0) ? (rawFreq * std::pow(2.0f, (float)octaveShift)) : quantizeFrequency(rawFreq, scaleMode, octaveShift);
+        targetAmplitude = (maxBrightness > 0.05f) ? (maxBrightness * 0.3f) : 0.0f;
+    }
+    else // Sintetizador RGB
+    {
+        float sumR = 0.0f, sumG = 0.0f, sumB = 0.0f;
+        for (int y = 0; y < height; ++y)
+        {
+            auto color = currentImage.getPixelAt (xPos, y);
+            sumR += color.getFloatRed();
+            sumG += color.getFloatGreen();
+            sumB += color.getFloatBlue();
+        }
+        float avgR = sumR / height;
+        float avgG = sumG / height;
+        float avgB = sumB / height;
+
+        float rawFreq = minFreq + (maxFreq - minFreq) * avgG; // Verde = Pitch
+        currentFreq = (scaleMode == 0) ? (rawFreq * std::pow(2.0f, (float)octaveShift)) : quantizeFrequency(rawFreq, scaleMode, octaveShift);
+        
+        targetAmplitude = avgB * 0.4f; // Azul = Volumen
+        filterCoeff = juce::jlimit(0.01f, 1.0f, avgR * 1.5f); // Rojo = Filtro Lowpass
+    }
+
+    float phaseDelta = (currentFreq * juce::MathConstants<float>::twoPi) / sampleRate;
 
     int numSamples = buffer.getNumSamples();
     int totalNumOutputChannels = getTotalNumOutputChannels();
     
     for (int i = 0; i < numSamples; ++i)
     {
-        // Oscilador Senoidal
         float sampleValue = std::sin (currentPhase) * targetAmplitude;
         
+        // Aplicar Filtro One-Pole si estamos en Modo RGB
+        filterState += filterCoeff * (sampleValue - filterState);
+        float finalSample = (engineMode == 1) ? filterState : sampleValue;
+
         for (int channel = 0; channel < totalNumOutputChannels; ++channel)
-            buffer.addSample (channel, i, sampleValue);
+            buffer.addSample (channel, i, finalSample);
             
         currentPhase += phaseDelta;
         if (currentPhase >= juce::MathConstants<float>::twoPi)

@@ -2265,6 +2265,7 @@ CMakeFiles/ExtasisVision.dir/Source/PluginProcessor.cpp.o: /Users/babyonk1/Deskt
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdint.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginProcessor.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h \
   ExtasisVision_artefacts/JuceLibraryCode/JuceHeader.h \
   _deps/juce-src/modules/juce_audio_basics/audio_play_head/juce_AudioPlayHead.h \
   _deps/juce-src/modules/juce_audio_basics/buffers/juce_AudioChannelSet.h \

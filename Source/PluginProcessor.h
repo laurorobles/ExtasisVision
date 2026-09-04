@@ -38,6 +38,7 @@ public:
     
     float currentPhase = 0.0f;
     float scanPositionX = 0.0f; 
+    float filterState = 0.0f; // Para el Sintetizador RGB
     
     juce::CriticalSection imageLock; // Proteger acceso a la imagen entre hilos
 

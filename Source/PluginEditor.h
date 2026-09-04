@@ -23,9 +23,13 @@ private:
 
     juce::Slider scanSpeedSlider;
     juce::Slider baseOctaveSlider;
+    juce::ComboBox engineModeComboBox;
+    juce::ComboBox scaleModeComboBox;
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> scanSpeedAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> baseOctaveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> engineModeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> scaleModeAttachment;
     
     ExtasisDesign::ExtasisLookAndFeel customLookAndFeel;
 
