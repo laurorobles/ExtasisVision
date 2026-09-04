@@ -30,6 +30,18 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    // --- ExtasisVision Engine Variables ---
+    void loadImage (const juce::File& file);
+    
+    juce::Image currentImage;
+    bool hasImage = false;
+    
+    float currentPhase = 0.0f;
+    float scanPositionX = 0.0f; 
+    float scanSpeed = 0.1f; // 10s para cruzar la imagen
+    
+    juce::CriticalSection imageLock; // Proteger acceso a la imagen entre hilos
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExtasisVisionAudioProcessor)
 };
