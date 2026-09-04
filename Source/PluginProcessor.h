@@ -38,9 +38,12 @@ public:
     
     float currentPhase = 0.0f;
     float scanPositionX = 0.0f; 
-    float scanSpeed = 0.1f; // 10s para cruzar la imagen
     
     juce::CriticalSection imageLock; // Proteger acceso a la imagen entre hilos
+
+    // --- Audio Processor Value Tree State ---
+    juce::AudioProcessorValueTreeState apvts;
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExtasisVisionAudioProcessor)

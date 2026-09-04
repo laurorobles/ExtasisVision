@@ -1,6 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "Theme.h"
 
 class ExtasisVisionAudioProcessorEditor : public juce::AudioProcessorEditor,
                                           public juce::FileDragAndDropTarget,
@@ -19,6 +20,14 @@ public:
 
 private:
     ExtasisVisionAudioProcessor& audioProcessor;
+
+    juce::Slider scanSpeedSlider;
+    juce::Slider baseOctaveSlider;
+
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> scanSpeedAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> baseOctaveAttachment;
+    
+    ExtasisDesign::ExtasisLookAndFeel customLookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExtasisVisionAudioProcessorEditor)
 };

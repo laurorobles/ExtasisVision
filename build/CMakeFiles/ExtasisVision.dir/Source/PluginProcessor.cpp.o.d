@@ -1391,4 +1391,5 @@ CMakeFiles/ExtasisVision.dir/Source/PluginProcessor.cpp.o: \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_utils/players/juce_AudioProcessorPlayer.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_utils/audio_cd/juce_AudioCDBurner.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_utils/audio_cd/juce_AudioCDReader.h \
-  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h

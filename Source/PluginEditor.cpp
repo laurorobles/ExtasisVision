@@ -6,13 +6,33 @@
 ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVisionAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
-    // Define the initial window size
+    // Sliders config
+    scanSpeedSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    scanSpeedSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    scanSpeedSlider.setTooltip ("VELOCIDAD DEL ESCANER ÓPTICO (HZ)");
+    scanSpeedSlider.setLookAndFeel (&customLookAndFeel);
+    addAndMakeVisible (scanSpeedSlider);
+
+    baseOctaveSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    baseOctaveSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    baseOctaveSlider.setTooltip ("TRANSPOSICIÓN BASE (OCTAVAS)");
+    baseOctaveSlider.setLookAndFeel (&customLookAndFeel);
+    addAndMakeVisible (baseOctaveSlider);
+
+    // Attachments
+    scanSpeedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+        audioProcessor.apvts, "SCAN_SPEED", scanSpeedSlider);
+    baseOctaveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+        audioProcessor.apvts, "BASE_OCTAVE", baseOctaveSlider);
+
     setSize (800, 600);
     startTimerHz (60); // 60 FPS repainting for the scanner
 }
 
 ExtasisVisionAudioProcessorEditor::~ExtasisVisionAudioProcessorEditor()
 {
+    scanSpeedSlider.setLookAndFeel (nullptr);
+    baseOctaveSlider.setLookAndFeel (nullptr);
 }
 
 bool ExtasisVisionAudioProcessorEditor::isInterestedInFileDrag (const juce::StringArray& files)
@@ -45,23 +65,36 @@ void ExtasisVisionAudioProcessorEditor::timerCallback()
 
 void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // Usar las reglas de diseño para el fondo
     g.fillAll (ExtasisDesign::bgBase);
-
-    // Dibujar un panel central siguiendo el sistema de márgenes rígidos
     auto bounds = getLocalBounds().reduced (ExtasisDesign::marginLarge);
     
+    // Header (Título)
+    auto headerBounds = bounds.removeFromTop(60);
+    g.setColour (ExtasisDesign::hudRed);
+    g.setFont (ExtasisDesign::getFontTitle());
+    g.drawFittedText ("EXTASIS VISION", headerBounds, juce::Justification::centred, 1);
+
+    // Controles (Footer)
+    auto footerBounds = bounds.removeFromBottom(120);
+    g.setColour (ExtasisDesign::metalChrome);
+    g.setFont (ExtasisDesign::getFontBody());
+    
+    // Textos debajo de los knobs (dividimos el footer en dos)
+    auto speedLabelArea = footerBounds.removeFromLeft(footerBounds.getWidth() / 2).removeFromBottom(30);
+    auto octaveLabelArea = footerBounds.removeFromBottom(30);
+    g.drawFittedText ("SCAN SPEED", speedLabelArea, juce::Justification::centred, 1);
+    g.drawFittedText ("BASE OCTAVE", octaveLabelArea, juce::Justification::centred, 1);
+
+    // Panel Principal (Imagen)
+    bounds.reduce (0, ExtasisDesign::marginMedium);
     g.setColour (ExtasisDesign::bgPanel);
     g.fillRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius);
 
     if (audioProcessor.hasImage)
     {
         const juce::ScopedLock sl (audioProcessor.imageLock);
-        
-        // Dibujar la imagen dentro del panel
         g.drawImage (audioProcessor.currentImage, bounds.toFloat(), juce::RectanglePlacement::centred);
         
-        // Dibujar línea de escaneo
         float scanX = bounds.getX() + (audioProcessor.scanPositionX * bounds.getWidth());
         g.setColour (ExtasisDesign::hudRed.withAlpha(0.8f));
         g.drawLine (scanX, bounds.getY(), scanX, bounds.getBottom(), 2.0f);
@@ -76,11 +109,6 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (ExtasisDesign::metalDark);
     g.drawRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius, 2.0f);
 
-    // Textos con tipografía y color del tema
-    g.setColour (ExtasisDesign::hudRed);
-    g.setFont (ExtasisDesign::getFontTitle());
-    g.drawFittedText ("EXTASIS VISION", bounds.removeFromTop(80), juce::Justification::centred, 1);
-
     // Créditos del desarrollador
     g.setColour (ExtasisDesign::metalDark.brighter(0.5f));
     g.setFont (ExtasisDesign::getFontBody().withHeight(11.0f));
@@ -91,4 +119,17 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
 
 void ExtasisVisionAudioProcessorEditor::resized()
 {
+    auto bounds = getLocalBounds().reduced (ExtasisDesign::marginLarge);
+    bounds.removeFromTop(60); // Header
+    auto footerBounds = bounds.removeFromBottom(120);
+    
+    auto leftKnob = footerBounds.removeFromLeft(footerBounds.getWidth() / 2);
+    auto rightKnob = footerBounds;
+    
+    // Dejar espacio para las etiquetas de abajo
+    leftKnob.removeFromBottom(30);
+    rightKnob.removeFromBottom(30);
+
+    scanSpeedSlider.setBounds (leftKnob.reduced(10));
+    baseOctaveSlider.setBounds (rightKnob.reduced(10));
 }

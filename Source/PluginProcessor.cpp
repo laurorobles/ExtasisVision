@@ -1,6 +1,19 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+juce::AudioProcessorValueTreeState::ParameterLayout ExtasisVisionAudioProcessor::createParameterLayout()
+{
+    std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "SCAN_SPEED", "Velocidad de Escaneo", 0.01f, 1.0f, 0.1f));
+        
+    params.push_back (std::make_unique<juce::AudioParameterInt> (
+        "BASE_OCTAVE", "Octava Base", -2, 2, 0));
+
+    return { params.begin(), params.end() };
+}
+
 ExtasisVisionAudioProcessor::ExtasisVisionAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
      : AudioProcessor (BusesProperties()
@@ -10,7 +23,8 @@ ExtasisVisionAudioProcessor::ExtasisVisionAudioProcessor()
                       #endif
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+       apvts (*this, nullptr, "Parameters", createParameterLayout())
 #endif
 {
 }
@@ -93,10 +107,18 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     
     // Mapeo Y -> Frecuencia (Abajo es grave, Arriba es agudo)
     float normalizedY = 1.0f - ((float)brightestY / (float)height); 
-    float minFreq = 50.0f;
-    float maxFreq = 2000.0f;
+    
+    // Leer Octava de los parámetros
+    int octaveShift = static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE")->load());
+    float freqMultiplier = std::pow (2.0f, (float)octaveShift);
+    
+    float minFreq = 50.0f * freqMultiplier;
+    float maxFreq = 2000.0f * freqMultiplier;
     float currentFreq = minFreq + (maxFreq - minFreq) * normalizedY;
     float phaseDelta = (currentFreq * juce::MathConstants<float>::twoPi) / sampleRate;
+
+    // Leer Velocidad de Escaneo
+    float scanSpeed = apvts.getRawParameterValue ("SCAN_SPEED")->load();
 
     // Gate: Si el píxel es muy oscuro, hacer silencio
     float targetAmplitude = (maxBrightness > 0.05f) ? (maxBrightness * 0.3f) : 0.0f;
