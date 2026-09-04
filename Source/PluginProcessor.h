@@ -36,9 +36,10 @@ public:
     juce::Image currentImage;
     bool hasImage = false;
     
-    float currentPhase = 0.0f;
-    float scanPositionX = 0.0f; 
-    float filterState = 0.0f; // Para el Sintetizador RGB
+    // --- Estado de los Escáneres (Polifonía 2 voces) ---
+    float currentPhase[2] = {0.0f, 0.0f};
+    float scanPositionX[2] = {0.0f, 0.0f}; 
+    float filterState[2] = {0.0f, 0.0f}; // Para el Sintetizador RGB
     
     juce::CriticalSection imageLock; // Proteger acceso a la imagen entre hilos
 

@@ -9,15 +9,27 @@ ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVis
     // Sliders config
     scanSpeedSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     scanSpeedSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
-    scanSpeedSlider.setTooltip ("VELOCIDAD DEL ESCANER ÓPTICO (HZ)");
+    scanSpeedSlider.setTooltip ("VELOCIDAD DEL ESCANER 1 (HZ)");
     scanSpeedSlider.setLookAndFeel (&customLookAndFeel);
     addAndMakeVisible (scanSpeedSlider);
 
     baseOctaveSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     baseOctaveSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
-    baseOctaveSlider.setTooltip ("TRANSPOSICIÓN BASE (OCTAVAS)");
+    baseOctaveSlider.setTooltip ("OCTAVA BASE 1");
     baseOctaveSlider.setLookAndFeel (&customLookAndFeel);
     addAndMakeVisible (baseOctaveSlider);
+
+    scanSpeed2Slider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    scanSpeed2Slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    scanSpeed2Slider.setTooltip ("VELOCIDAD DEL ESCANER 2 (HZ)");
+    scanSpeed2Slider.setLookAndFeel (&customLookAndFeel);
+    addAndMakeVisible (scanSpeed2Slider);
+
+    baseOctave2Slider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    baseOctave2Slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    baseOctave2Slider.setTooltip ("OCTAVA BASE 2");
+    baseOctave2Slider.setLookAndFeel (&customLookAndFeel);
+    addAndMakeVisible (baseOctave2Slider);
 
     delayMixSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
     delayMixSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
@@ -36,6 +48,10 @@ ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVis
         audioProcessor.apvts, "SCAN_SPEED", scanSpeedSlider);
     baseOctaveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.apvts, "BASE_OCTAVE", baseOctaveSlider);
+    scanSpeed2Attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+        audioProcessor.apvts, "SCAN_SPEED_2", scanSpeed2Slider);
+    baseOctave2Attachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+        audioProcessor.apvts, "BASE_OCTAVE_2", baseOctave2Slider);
     delayMixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.apvts, "DELAY_MIX", delayMixSlider);
     reverbMixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
@@ -60,6 +76,8 @@ ExtasisVisionAudioProcessorEditor::~ExtasisVisionAudioProcessorEditor()
 {
     scanSpeedSlider.setLookAndFeel (nullptr);
     baseOctaveSlider.setLookAndFeel (nullptr);
+    scanSpeed2Slider.setLookAndFeel (nullptr);
+    baseOctave2Slider.setLookAndFeel (nullptr);
     delayMixSlider.setLookAndFeel (nullptr);
     reverbMixSlider.setLookAndFeel (nullptr);
 }
@@ -108,30 +126,48 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (ExtasisDesign::metalChrome);
     g.setFont (ExtasisDesign::getFontBody());
     
-    // Textos debajo de los knobs (dividimos el footer en 4)
-    int labelWidth = footerBounds.getWidth() / 4;
-    auto speedLabelArea = footerBounds.removeFromLeft(labelWidth).removeFromBottom(30);
-    auto octaveLabelArea = footerBounds.removeFromLeft(labelWidth).removeFromBottom(30);
-    auto delayLabelArea = footerBounds.removeFromLeft(labelWidth).removeFromBottom(30);
-    auto reverbLabelArea = footerBounds.removeFromBottom(30);
-    g.drawFittedText ("SCAN SPEED", speedLabelArea, juce::Justification::centred, 1);
-    g.drawFittedText ("BASE OCTAVE", octaveLabelArea, juce::Justification::centred, 1);
-    g.drawFittedText ("ECHO MIX", delayLabelArea, juce::Justification::centred, 1);
-    g.drawFittedText ("SPACE MIX", reverbLabelArea, juce::Justification::centred, 1);
+    // Textos de los 3 Módulos en el Control Deck
+    int moduleWidth = footerBounds.getWidth() / 3;
+    
+    auto mod1 = footerBounds.removeFromLeft(moduleWidth);
+    auto mod2 = footerBounds.removeFromLeft(moduleWidth);
+    auto mod3 = footerBounds;
+
+    // Subdividir módulos
+    auto m1Speed = mod1.removeFromLeft(mod1.getWidth() / 2).removeFromBottom(25);
+    auto m1Oct = mod1.removeFromBottom(25);
+    auto m2Speed = mod2.removeFromLeft(mod2.getWidth() / 2).removeFromBottom(25);
+    auto m2Oct = mod2.removeFromBottom(25);
+    auto m3Del = mod3.removeFromLeft(mod3.getWidth() / 2).removeFromBottom(25);
+    auto m3Rev = mod3.removeFromBottom(25);
+
+    g.setFont (12.0f);
+    g.drawFittedText ("SPEED 1", m1Speed, juce::Justification::centred, 1);
+    g.drawFittedText ("OCTAVE 1", m1Oct, juce::Justification::centred, 1);
+    g.drawFittedText ("SPEED 2", m2Speed, juce::Justification::centred, 1);
+    g.drawFittedText ("OCTAVE 2", m2Oct, juce::Justification::centred, 1);
+    g.drawFittedText ("ECHO", m3Del, juce::Justification::centred, 1);
+    g.drawFittedText ("SPACE", m3Rev, juce::Justification::centred, 1);
 
     // Panel Principal (Imagen)
     bounds.reduce (0, ExtasisDesign::marginMedium);
     g.setColour (ExtasisDesign::bgPanel);
-    g.fillRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius);
+    g.fillRoundedRectangle (bounds.toFloat(), 5.0f);
 
     if (audioProcessor.hasImage)
     {
-        const juce::ScopedLock sl (audioProcessor.imageLock);
-        g.drawImage (audioProcessor.currentImage, bounds.toFloat(), juce::RectanglePlacement::centred);
+        g.drawImage (audioProcessor.currentImage, bounds.toFloat(),
+                     juce::RectanglePlacement::stretchToFit);
+
+        // Escáner 1 (Rojo)
+        g.setColour (ExtasisDesign::hudRed);
+        float scanX1 = bounds.getX() + (audioProcessor.scanPositionX[0] * bounds.getWidth());
+        g.drawLine (scanX1, bounds.getY(), scanX1, bounds.getBottom(), 2.0f);
         
-        float scanX = bounds.getX() + (audioProcessor.scanPositionX * bounds.getWidth());
-        g.setColour (ExtasisDesign::hudRed.withAlpha(0.8f));
-        g.drawLine (scanX, bounds.getY(), scanX, bounds.getBottom(), 2.0f);
+        // Escáner 2 (Cian)
+        g.setColour (juce::Colours::cyan);
+        float scanX2 = bounds.getX() + (audioProcessor.scanPositionX[1] * bounds.getWidth());
+        g.drawLine (scanX2, bounds.getY(), scanX2, bounds.getBottom(), 2.0f);
     }
     else
     {
@@ -164,20 +200,27 @@ void ExtasisVisionAudioProcessorEditor::resized()
 
     auto footerBounds = bounds.removeFromBottom(120);
     
-    int knobWidth = footerBounds.getWidth() / 4;
-    auto knob1 = footerBounds.removeFromLeft(knobWidth);
-    auto knob2 = footerBounds.removeFromLeft(knobWidth);
-    auto knob3 = footerBounds.removeFromLeft(knobWidth);
-    auto knob4 = footerBounds;
-    
-    // Dejar espacio para las etiquetas de abajo
-    knob1.removeFromBottom(30);
-    knob2.removeFromBottom(30);
-    knob3.removeFromBottom(30);
-    knob4.removeFromBottom(30);
+    int moduleWidth = footerBounds.getWidth() / 3;
+    auto mod1 = footerBounds.removeFromLeft(moduleWidth);
+    auto mod2 = footerBounds.removeFromLeft(moduleWidth);
+    auto mod3 = footerBounds;
 
-    scanSpeedSlider.setBounds (knob1.reduced(10));
-    baseOctaveSlider.setBounds (knob2.reduced(10));
-    delayMixSlider.setBounds (knob3.reduced(10));
-    reverbMixSlider.setBounds (knob4.reduced(10));
+    // Dejar espacio para las etiquetas en el fondo (25px)
+    mod1.removeFromBottom(25);
+    mod2.removeFromBottom(25);
+    mod3.removeFromBottom(25);
+
+    auto kSpeed1 = mod1.removeFromLeft(mod1.getWidth() / 2);
+    auto kOct1 = mod1;
+    auto kSpeed2 = mod2.removeFromLeft(mod2.getWidth() / 2);
+    auto kOct2 = mod2;
+    auto kDel = mod3.removeFromLeft(mod3.getWidth() / 2);
+    auto kRev = mod3;
+
+    scanSpeedSlider.setBounds (kSpeed1.reduced(10));
+    baseOctaveSlider.setBounds (kOct1.reduced(10));
+    scanSpeed2Slider.setBounds (kSpeed2.reduced(10));
+    baseOctave2Slider.setBounds (kOct2.reduced(10));
+    delayMixSlider.setBounds (kDel.reduced(10));
+    reverbMixSlider.setBounds (kRev.reduced(10));
 }

@@ -23,6 +23,8 @@ private:
 
     juce::Slider scanSpeedSlider;
     juce::Slider baseOctaveSlider;
+    juce::Slider scanSpeed2Slider;
+    juce::Slider baseOctave2Slider;
     juce::Slider delayMixSlider;
     juce::Slider reverbMixSlider;
     
@@ -31,6 +33,8 @@ private:
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> scanSpeedAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> baseOctaveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> scanSpeed2Attachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> baseOctave2Attachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> delayMixAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> reverbMixAttachment;
     

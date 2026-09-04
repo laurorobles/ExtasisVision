@@ -6,10 +6,16 @@ juce::AudioProcessorValueTreeState::ParameterLayout ExtasisVisionAudioProcessor:
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
-        "SCAN_SPEED", "Velocidad de Escaneo", 0.01f, 1.0f, 0.1f));
+        "SCAN_SPEED", "Velocidad de Escaneo 1", 0.01f, 1.0f, 0.1f));
         
     params.push_back (std::make_unique<juce::AudioParameterInt> (
-        "BASE_OCTAVE", "Octava Base", -2, 2, 0));
+        "BASE_OCTAVE", "Octava Base 1", -2, 2, 0));
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "SCAN_SPEED_2", "Velocidad de Escaneo 2", 0.01f, 1.0f, 0.2f));
+        
+    params.push_back (std::make_unique<juce::AudioParameterInt> (
+        "BASE_OCTAVE_2", "Octava Base 2", -2, 2, -1));
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "ENGINE_MODE", "Motor", juce::StringArray{"Escaner Analitico", "Sintetizador RGB"}, 0));
@@ -51,7 +57,8 @@ void ExtasisVisionAudioProcessor::loadImage (const juce::File& file)
         const juce::ScopedLock sl (imageLock);
         currentImage = newImage;
         hasImage = true;
-        scanPositionX = 0.0f; // Resetear escáner
+        scanPositionX[0] = 0.0f;
+        scanPositionX[1] = 0.0f;
     }
 }
 
@@ -69,8 +76,10 @@ void ExtasisVisionAudioProcessor::changeProgramName (int index, const juce::Stri
 
 void ExtasisVisionAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock) 
 { 
-    currentPhase = 0.0f;
-    filterState = 0.0f;
+    currentPhase[0] = 0.0f;
+    currentPhase[1] = 0.0f;
+    filterState[0] = 0.0f;
+    filterState[1] = 0.0f;
 
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
@@ -120,24 +129,23 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     // Leer Parámetros
     int engineMode = static_cast<int> (apvts.getRawParameterValue ("ENGINE_MODE")->load());
     int scaleMode = static_cast<int> (apvts.getRawParameterValue ("SCALE_MODE")->load());
-    int octaveShift = static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE")->load());
-    float scanSpeed = apvts.getRawParameterValue ("SCAN_SPEED")->load();
     float delayMix = apvts.getRawParameterValue ("DELAY_MIX")->load();
     float reverbMix = apvts.getRawParameterValue ("REVERB_MIX")->load();
-
-    int xPos = juce::jlimit (0, width - 1, (int)(scanPositionX * width));
     
-    float minFreq = 50.0f;
-    float maxFreq = 2000.0f;
-    float currentFreq = minFreq;
-    float targetAmplitude = 0.0f;
-    float filterCoeff = 1.0f; // 1.0 = Abierto
+    float scanSpeeds[2] = {
+        apvts.getRawParameterValue ("SCAN_SPEED")->load(),
+        apvts.getRawParameterValue ("SCAN_SPEED_2")->load()
+    };
+    int octaveShifts[2] = {
+        static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE")->load()),
+        static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE_2")->load())
+    };
 
     // Función Lambda para Cuantizar Frecuencia a Escala
     auto quantizeFrequency = [](float freq, int mode, int octave) -> float {
         float midiNote = 69.0f + 12.0f * std::log2 (freq / 440.0f);
         int note = (int) std::round (midiNote);
-        if (mode == 2) // Pentatónica Menor (0, 3, 5, 7, 10)
+        if (mode == 2) // Pentatónica Menor
         {
             int octaveBase = (note / 12) * 12;
             int pitchClass = note % 12;
@@ -148,79 +156,87 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         return 440.0f * std::pow (2.0f, (note - 69.0f) / 12.0f);
     };
 
-    if (engineMode == 0) // Escáner Analítico
+    float phaseDeltas[2] = {0.0f, 0.0f};
+    float targetAmplitudes[2] = {0.0f, 0.0f};
+    float filterCoeffs[2] = {1.0f, 1.0f};
+
+    float minFreq = 50.0f;
+    float maxFreq = 2000.0f;
+
+    for (int v = 0; v < 2; ++v)
     {
-        float maxBrightness = 0.0f;
-        int brightestY = height / 2;
-        
-        for (int y = 0; y < height; ++y)
+        int xPos = juce::jlimit (0, width - 1, (int)(scanPositionX[v] * width));
+        float currentFreq = minFreq;
+
+        if (engineMode == 0) // Escáner Analítico
         {
-            float brightness = currentImage.getPixelAt (xPos, y).getBrightness();
-            if (brightness > maxBrightness)
+            float maxBrightness = 0.0f;
+            int brightestY = height / 2;
+            for (int y = 0; y < height; ++y)
             {
-                maxBrightness = brightness;
-                brightestY = y;
+                float brightness = currentImage.getPixelAt (xPos, y).getBrightness();
+                if (brightness > maxBrightness) { maxBrightness = brightness; brightestY = y; }
             }
+            float normalizedY = 1.0f - ((float)brightestY / (float)height); 
+            float rawFreq = minFreq + (maxFreq - minFreq) * normalizedY;
+            currentFreq = (scaleMode == 0) ? (rawFreq * std::pow(2.0f, (float)octaveShifts[v])) : quantizeFrequency(rawFreq, scaleMode, octaveShifts[v]);
+            targetAmplitudes[v] = (maxBrightness > 0.05f) ? (maxBrightness * 0.3f) : 0.0f;
         }
-        
-        float normalizedY = 1.0f - ((float)brightestY / (float)height); 
-        float rawFreq = minFreq + (maxFreq - minFreq) * normalizedY;
-        
-        currentFreq = (scaleMode == 0) ? (rawFreq * std::pow(2.0f, (float)octaveShift)) : quantizeFrequency(rawFreq, scaleMode, octaveShift);
-        targetAmplitude = (maxBrightness > 0.05f) ? (maxBrightness * 0.3f) : 0.0f;
-    }
-    else // Sintetizador RGB
-    {
-        float sumR = 0.0f, sumG = 0.0f, sumB = 0.0f;
-        for (int y = 0; y < height; ++y)
+        else // Sintetizador RGB
         {
-            auto color = currentImage.getPixelAt (xPos, y);
-            sumR += color.getFloatRed();
-            sumG += color.getFloatGreen();
-            sumB += color.getFloatBlue();
+            float sumR = 0.0f, sumG = 0.0f, sumB = 0.0f;
+            for (int y = 0; y < height; ++y)
+            {
+                auto color = currentImage.getPixelAt (xPos, y);
+                sumR += color.getFloatRed();
+                sumG += color.getFloatGreen();
+                sumB += color.getFloatBlue();
+            }
+            float avgR = sumR / height;
+            float avgG = sumG / height;
+            float avgB = sumB / height;
+
+            float rawFreq = minFreq + (maxFreq - minFreq) * avgG; 
+            currentFreq = (scaleMode == 0) ? (rawFreq * std::pow(2.0f, (float)octaveShifts[v])) : quantizeFrequency(rawFreq, scaleMode, octaveShifts[v]);
+            targetAmplitudes[v] = avgB * 0.4f; 
+            filterCoeffs[v] = juce::jlimit(0.01f, 1.0f, avgR * 1.5f);
         }
-        float avgR = sumR / height;
-        float avgG = sumG / height;
-        float avgB = sumB / height;
 
-        float rawFreq = minFreq + (maxFreq - minFreq) * avgG; // Verde = Pitch
-        currentFreq = (scaleMode == 0) ? (rawFreq * std::pow(2.0f, (float)octaveShift)) : quantizeFrequency(rawFreq, scaleMode, octaveShift);
-        
-        targetAmplitude = avgB * 0.4f; // Azul = Volumen
-        filterCoeff = juce::jlimit(0.01f, 1.0f, avgR * 1.5f); // Rojo = Filtro Lowpass
+        phaseDeltas[v] = (currentFreq * juce::MathConstants<float>::twoPi) / sampleRate;
     }
-
-    float phaseDelta = (currentFreq * juce::MathConstants<float>::twoPi) / sampleRate;
 
     int numSamples = buffer.getNumSamples();
     int totalNumOutputChannels = getTotalNumOutputChannels();
     
     for (int i = 0; i < numSamples; ++i)
     {
-        float sampleValue = std::sin (currentPhase) * targetAmplitude;
-        
-        // Aplicar Filtro One-Pole si estamos en Modo RGB
-        filterState += filterCoeff * (sampleValue - filterState);
-        float synthOutput = (engineMode == 1) ? filterState : sampleValue;
+        float synthOutputSum = 0.0f;
+        for (int v = 0; v < 2; ++v)
+        {
+            float sampleValue = std::sin (currentPhase[v]) * targetAmplitudes[v];
+            filterState[v] += filterCoeffs[v] * (sampleValue - filterState[v]);
+            float voiceOutput = (engineMode == 1) ? filterState[v] : sampleValue;
+            synthOutputSum += voiceOutput;
+
+            currentPhase[v] += phaseDeltas[v];
+            if (currentPhase[v] >= juce::MathConstants<float>::twoPi) currentPhase[v] -= juce::MathConstants<float>::twoPi;
+                
+            scanPositionX[v] += (scanSpeeds[v] / sampleRate);
+            if (scanPositionX[v] > 1.0f) scanPositionX[v] -= 1.0f;
+        }
+
+        // Prevención de Clipping Suave (Soft Clipping)
+        synthOutputSum = std::tanh (synthOutputSum);
 
         // Procesar Delay
-        float delayedSample = delayLine.popSample (0); // Leer de la cabeza (mono)
+        float delayedSample = delayLine.popSample (0); 
         float delayFeedback = 0.4f;
-        // Empujar muestra original + feedback
-        delayLine.pushSample (0, synthOutput + delayedSample * delayFeedback); 
+        delayLine.pushSample (0, synthOutputSum + delayedSample * delayFeedback); 
         
-        float finalSample = synthOutput + delayedSample * delayMix;
+        float finalSample = synthOutputSum + delayedSample * delayMix;
 
         for (int channel = 0; channel < totalNumOutputChannels; ++channel)
             buffer.addSample (channel, i, finalSample);
-            
-        currentPhase += phaseDelta;
-        if (currentPhase >= juce::MathConstants<float>::twoPi)
-            currentPhase -= juce::MathConstants<float>::twoPi;
-            
-        scanPositionX += (scanSpeed / sampleRate);
-        if (scanPositionX > 1.0f)
-            scanPositionX -= 1.0f; // Ciclar la imagen
     }
 
     // Procesar Reverb al final del bloque
