@@ -2315,6 +2315,7 @@ CMakeFiles/ExtasisVision.dir/Source/PluginProcessor.cpp.o: /Users/babyonk1/Deskt
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdbool.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdint.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/LicenseManager.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginProcessor.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h \
@@ -33016,6 +33017,8 @@ _deps/juce-src/modules/juce_graphics/fonts/harfbuzz/hb-ot-shape-normalize.hh:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CIContext.h:
 
+_deps/juce-src/modules/juce_events/timers/juce_Timer.cpp:
+
 _deps/juce-src/modules/juce_events/timers/juce_MultiTimer.cpp:
 
 _deps/juce-src/modules/juce_events/native/juce_MessageQueue_mac.h:
@@ -35804,14 +35807,6 @@ _deps/juce-src/modules/juce_gui_basics/filebrowser/juce_FileSearchPathListCompon
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGLayer.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers/Histogram.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_volatile.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CloudKit.framework/Headers/CKSubscription.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGImage.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Security.framework/Headers/SecIdentitySearch.h:
 
 _deps/juce-src/modules/juce_core/system/juce_StandardHeader.h:
@@ -36131,6 +36126,14 @@ _deps/juce-src/modules/juce_gui_basics/layout/juce_ScrollBar.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/forward.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers/vImage.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/remove_volatile.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CloudKit.framework/Headers/CKSubscription.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CGImage.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers/Histogram.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework/Frameworks/vImage.framework/Headers/Geometry.h:
 
@@ -36863,8 +36866,6 @@ _deps/juce-src/modules/juce_data_structures/undomanager/juce_UndoableAction.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/dlfcn.h:
 
 _deps/juce-src/modules/juce_data_structures/app_properties/juce_ApplicationProperties.h:
-
-_deps/juce-src/modules/juce_events/timers/juce_Timer.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/type_identity.h:
 
@@ -39134,6 +39135,10 @@ _deps/juce-src/modules/juce_graphics/fonts/harfbuzz/hb-ot-var.cc:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/memory:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale_dir/get_c_locale.h:
+
+/Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/LicenseManager.h:
+
 _deps/juce-src/modules/juce_graphics/fonts/harfbuzz/OT/Layout/Common/CoverageFormat2.hh:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__cstddef/size_t.h:
@@ -39375,8 +39380,6 @@ _deps/juce-src/modules/juce_core/text/juce_LocalisedStrings.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__tuple/tuple_indices.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreData.framework/Headers/NSManagedObject.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__locale_dir/get_c_locale.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSJSONSerialization.h:
 

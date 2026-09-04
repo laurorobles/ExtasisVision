@@ -68,8 +68,54 @@ ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVis
     scaleModeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
         audioProcessor.apvts, "SCALE_MODE", scaleModeComboBox);
 
+    syncMode1ComboBox.addItemList (juce::StringArray{"Free Hz", "1 Bar", "1/2", "1/4", "1/8", "1/16"}, 1);
+    addAndMakeVisible (syncMode1ComboBox);
+    syncMode1Attachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+        audioProcessor.apvts, "SYNC_MODE_1", syncMode1ComboBox);
+
+    syncMode2ComboBox.addItemList (juce::StringArray{"Free Hz", "1 Bar", "1/2", "1/4", "1/8", "1/16"}, 1);
+    addAndMakeVisible (syncMode2ComboBox);
+    syncMode2Attachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+        audioProcessor.apvts, "SYNC_MODE_2", syncMode2ComboBox);
+
+    // License UI Setup
+    addChildComponent (licenseInput);
+    licenseInput.setMultiLine (false);
+    licenseInput.setJustification (juce::Justification::centred);
+    licenseInput.setTextToShowWhenEmpty ("EXTV-XXXX-XXXX-XXXX-XXXX", juce::Colours::grey);
+
+    addChildComponent (activateButton);
+    activateButton.setButtonText ("ACTIVATE LICENSE");
+    activateButton.onClick = [this] { checkLicense(); };
+
+    addChildComponent (gumroadLinkBtn);
+
+    if (!audioProcessor.isLicensedCached.load())
+    {
+        licenseInput.setVisible (true);
+        activateButton.setVisible (true);
+        gumroadLinkBtn.setVisible (true);
+    }
+
     setSize (800, 600);
     startTimerHz (60); // 60 FPS repainting for the scanner
+}
+
+void ExtasisVisionAudioProcessorEditor::checkLicense()
+{
+    if (LicenseManager::saveLicense (licenseInput.getText()))
+    {
+        audioProcessor.isLicensedCached.store (true);
+        licenseInput.setVisible (false);
+        activateButton.setVisible (false);
+        gumroadLinkBtn.setVisible (false);
+        repaint();
+    }
+    else
+    {
+        licenseInput.setText ("");
+        licenseInput.setTextToShowWhenEmpty ("INVALID KEY", juce::Colours::red);
+    }
 }
 
 ExtasisVisionAudioProcessorEditor::~ExtasisVisionAudioProcessorEditor()
@@ -179,6 +225,16 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (ExtasisDesign::metalDark);
     g.drawRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius, 2.0f);
 
+    if (!audioProcessor.isLicensedCached.load())
+    {
+        g.setColour (juce::Colours::black.withAlpha(0.8f));
+        g.fillRect (getLocalBounds());
+        
+        g.setColour (ExtasisDesign::hudRed);
+        g.setFont (24.0f);
+        g.drawText ("LICENSE REQUIRED", getLocalBounds().withSizeKeepingCentre(400, 200).withY(getLocalBounds().getCentreY() - 80), juce::Justification::centred);
+    }
+
     // Créditos del desarrollador
     g.setColour (ExtasisDesign::metalDark.brighter(0.5f));
     g.setFont (ExtasisDesign::getFontBody().withHeight(11.0f));
@@ -195,8 +251,10 @@ void ExtasisVisionAudioProcessorEditor::resized()
     // Header comboboxes
     headerBounds.removeFromLeft(200); // Espacio para el título "EXTASIS VISION"
     auto combosBounds = headerBounds.reduced(0, 15);
-    engineModeComboBox.setBounds (combosBounds.removeFromLeft(150).reduced(5));
-    scaleModeComboBox.setBounds (combosBounds.removeFromLeft(150).reduced(5));
+    engineModeComboBox.setBounds (combosBounds.removeFromLeft(120).reduced(2));
+    scaleModeComboBox.setBounds (combosBounds.removeFromLeft(120).reduced(2));
+    syncMode1ComboBox.setBounds (combosBounds.removeFromLeft(90).reduced(2));
+    syncMode2ComboBox.setBounds (combosBounds.removeFromLeft(90).reduced(2));
 
     auto footerBounds = bounds.removeFromBottom(120);
     
@@ -223,4 +281,12 @@ void ExtasisVisionAudioProcessorEditor::resized()
     baseOctave2Slider.setBounds (kOct2.reduced(10));
     delayMixSlider.setBounds (kDel.reduced(10));
     reverbMixSlider.setBounds (kRev.reduced(10));
+
+    if (!audioProcessor.isLicensedCached.load())
+    {
+        auto modalArea = getLocalBounds().withSizeKeepingCentre(400, 200);
+        licenseInput.setBounds (modalArea.removeFromTop(40).reduced(0, 5));
+        activateButton.setBounds (modalArea.removeFromTop(40).reduced(20, 5));
+        gumroadLinkBtn.setBounds (modalArea.removeFromTop(40).reduced(20, 5));
+    }
 }

@@ -2,7 +2,7 @@
   "Name": "ExtasisVision",
   "Version": "0.0.1",
   "Factory Info": {
-    "Vendor": "ExtasisRecords",
+    "Vendor": "Extasis Records",
     "URL": "",
     "E-Mail": "",
     "Flags": {
@@ -16,7 +16,7 @@
       "CID": "ABCDEF019182FAEB4578745245785669",
       "Category": "Audio Module Class",
       "Name": "ExtasisVision",
-      "Vendor": "ExtasisRecords",
+      "Vendor": "Extasis Records",
       "Version": "0.0.1",
       "SDKVersion": "VST 3.7.12",
       "Sub Categories": [
@@ -32,7 +32,7 @@
       "CID": "ABCDEF011234ABCD4578745245785669",
       "Category": "Component Controller Class",
       "Name": "ExtasisVision",
-      "Vendor": "ExtasisRecords",
+      "Vendor": "Extasis Records",
       "Version": "0.0.1",
       "SDKVersion": "VST 3.7.12",
       "Sub Categories": [
@@ -48,7 +48,7 @@
       "CID": "ABCDEF01C0DEF00D4578745245785669",
       "Category": "Plugin Compatibility Class",
       "Name": "ExtasisVision",
-      "Vendor": "ExtasisRecords",
+      "Vendor": "Extasis Records",
       "Version": "0.0.1",
       "SDKVersion": "VST 3.7.12",
       "Class Flags": 0,

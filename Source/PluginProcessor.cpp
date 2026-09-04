@@ -18,6 +18,14 @@ juce::AudioProcessorValueTreeState::ParameterLayout ExtasisVisionAudioProcessor:
         "BASE_OCTAVE_2", "Octava Base 2", -2, 2, -1));
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        "SYNC_MODE_1", "Modo Sincronia 1", 
+        juce::StringArray{"Free (Hz)", "1 Bar", "1/2", "1/4", "1/8", "1/16"}, 0));
+
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        "SYNC_MODE_2", "Modo Sincronia 2", 
+        juce::StringArray{"Free (Hz)", "1 Bar", "1/2", "1/4", "1/8", "1/16"}, 0));
+
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "ENGINE_MODE", "Motor", juce::StringArray{"Escaner Analitico", "Sintetizador RGB"}, 0));
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
@@ -45,6 +53,7 @@ ExtasisVisionAudioProcessor::ExtasisVisionAudioProcessor()
        apvts (*this, nullptr, "Parameters", createParameterLayout())
 #endif
 {
+    isLicensedCached = LicenseManager::isLicensed();
 }
 
 ExtasisVisionAudioProcessor::~ExtasisVisionAudioProcessor() {}
@@ -114,13 +123,26 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
 {
     juce::ignoreUnused (midiMessages);
     juce::ScopedNoDenormals noDenormals;
-    buffer.clear();
+    auto totalNumInputChannels  = getTotalNumInputChannels();
+    auto totalNumOutputChannels = getTotalNumOutputChannels();
+
+    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
+        buffer.clear (i, 0, buffer.getNumSamples());
+        
+    if (!isLicensedCached.load())
+    {
+        buffer.clear();
+        return;
+    }
+
+    if (!hasImage)
+    {
+        buffer.clear();
+        return;
+    }
 
     const juce::ScopedLock sl (imageLock);
     
-    if (! hasImage || currentImage.isNull())
-        return;
-
     int width = currentImage.getWidth();
     int height = currentImage.getHeight();
     float sampleRate = (float) getSampleRate();
@@ -140,6 +162,29 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE")->load()),
         static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE_2")->load())
     };
+    int syncModes[2] = {
+        static_cast<int> (apvts.getRawParameterValue ("SYNC_MODE_1")->load()),
+        static_cast<int> (apvts.getRawParameterValue ("SYNC_MODE_2")->load())
+    };
+
+    // --- Obtener datos del DAW (BPM, PPQ) ---
+    double bpm = 120.0;
+    double ppqPosition = 0.0;
+    bool isPlaying = false;
+    
+    if (auto* playHead = getPlayHead())
+    {
+        if (auto positionInfo = playHead->getPosition())
+        {
+            if (positionInfo->getBpm().hasValue())
+                bpm = *positionInfo->getBpm();
+            if (positionInfo->getPpqPosition().hasValue())
+                ppqPosition = *positionInfo->getPpqPosition();
+            isPlaying = positionInfo->getIsPlaying();
+        }
+    }
+
+    double beatDivisions[6] = {0.0, 4.0, 2.0, 1.0, 0.5, 0.25};
 
     // Función Lambda para Cuantizar Frecuencia a Escala
     auto quantizeFrequency = [](float freq, int mode, int octave) -> float {
@@ -165,6 +210,13 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
 
     for (int v = 0; v < 2; ++v)
     {
+        if (syncModes[v] > 0 && isPlaying) 
+        {
+            double beatsPerCycle = beatDivisions[syncModes[v]];
+            double phaseInCycle = std::fmod (ppqPosition, beatsPerCycle) / beatsPerCycle;
+            scanPositionX[v] = (float) phaseInCycle;
+        }
+
         int xPos = juce::jlimit (0, width - 1, (int)(scanPositionX[v] * width));
         float currentFreq = minFreq;
 
@@ -206,7 +258,6 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     }
 
     int numSamples = buffer.getNumSamples();
-    int totalNumOutputChannels = getTotalNumOutputChannels();
     
     for (int i = 0; i < numSamples; ++i)
     {
@@ -221,8 +272,11 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
             currentPhase[v] += phaseDeltas[v];
             if (currentPhase[v] >= juce::MathConstants<float>::twoPi) currentPhase[v] -= juce::MathConstants<float>::twoPi;
                 
-            scanPositionX[v] += (scanSpeeds[v] / sampleRate);
-            if (scanPositionX[v] > 1.0f) scanPositionX[v] -= 1.0f;
+            if (syncModes[v] == 0 || !isPlaying)
+            {
+                scanPositionX[v] += (scanSpeeds[v] / sampleRate);
+                if (scanPositionX[v] > 1.0f) scanPositionX[v] -= 1.0f;
+            }
         }
 
         // Prevención de Clipping Suave (Soft Clipping)

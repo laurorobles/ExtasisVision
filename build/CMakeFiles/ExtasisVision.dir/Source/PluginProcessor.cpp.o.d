@@ -1439,5 +1439,6 @@ CMakeFiles/ExtasisVision.dir/Source/PluginProcessor.cpp.o: \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Limiter.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Phaser.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Chorus.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/LicenseManager.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h

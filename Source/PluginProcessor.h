@@ -1,5 +1,6 @@
 #pragma once
 #include <JuceHeader.h>
+#include "LicenseManager.h"
 
 class ExtasisVisionAudioProcessor : public juce::AudioProcessor
 {
@@ -51,6 +52,8 @@ public:
     // --- Audio Processor Value Tree State ---
     juce::AudioProcessorValueTreeState apvts;
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    
+    std::atomic<bool> isLicensedCached { false };
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExtasisVisionAudioProcessor)

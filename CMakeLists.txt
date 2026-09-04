@@ -12,7 +12,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(juce)
 
 juce_add_plugin(ExtasisVision
-    COMPANY_NAME "ExtasisRecords"
+    COMPANY_NAME "Extasis Records"
     PLUGIN_MANUFACTURER_CODE ExtR
     PLUGIN_CODE ExVi
     FORMATS Standalone VST3 AU

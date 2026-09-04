@@ -30,6 +30,8 @@ private:
     
     juce::ComboBox engineModeComboBox;
     juce::ComboBox scaleModeComboBox;
+    juce::ComboBox syncMode1ComboBox;
+    juce::ComboBox syncMode2ComboBox;
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> scanSpeedAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> baseOctaveAttachment;
@@ -40,7 +42,16 @@ private:
     
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> engineModeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> scaleModeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> syncMode1Attachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> syncMode2Attachment;
     
+    // License UI
+    juce::TextEditor licenseInput;
+    juce::TextButton activateButton;
+    juce::HyperlinkButton gumroadLinkBtn { "BUY LICENSE", juce::URL ("http://laurorobles.gumroad.com") };
+
+    void checkLicense();
+
     ExtasisDesign::ExtasisLookAndFeel customLookAndFeel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExtasisVisionAudioProcessorEditor)
