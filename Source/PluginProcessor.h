@@ -42,6 +42,11 @@ public:
     
     juce::CriticalSection imageLock; // Proteger acceso a la imagen entre hilos
 
+    // --- Efectos DSP ---
+    juce::dsp::Reverb reverb;
+    juce::dsp::Reverb::Parameters reverbParams;
+    juce::dsp::DelayLine<float, juce::dsp::DelayLineInterpolationTypes::Linear> delayLine {44100};
+
     // --- Audio Processor Value Tree State ---
     juce::AudioProcessorValueTreeState apvts;
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();

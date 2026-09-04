@@ -23,11 +23,17 @@ private:
 
     juce::Slider scanSpeedSlider;
     juce::Slider baseOctaveSlider;
+    juce::Slider delayMixSlider;
+    juce::Slider reverbMixSlider;
+    
     juce::ComboBox engineModeComboBox;
     juce::ComboBox scaleModeComboBox;
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> scanSpeedAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> baseOctaveAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> delayMixAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> reverbMixAttachment;
+    
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> engineModeAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> scaleModeAttachment;
     

@@ -43,8 +43,18 @@ target_compile_definitions(ExtasisVision
 target_link_libraries(ExtasisVision
     PRIVATE
         juce::juce_audio_utils
+        juce::juce_dsp
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags
 )
+
+if(APPLE)
+    add_custom_command(TARGET ExtasisVision_VST3 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_BINARY_DIR}/ExtasisVision_artefacts/VST3/ExtasisVision.vst3"
+        "$ENV{HOME}/Desktop/ExtasisRecords/ExtasisVision.vst3"
+        COMMENT "Copying VST3 to Extasis Records folder..."
+    )
+endif()

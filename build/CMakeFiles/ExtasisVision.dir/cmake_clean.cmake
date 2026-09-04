@@ -23,6 +23,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_core/juce_core_CompilationTime.cpp.o.d"
   "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o"
   "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.o.d"
+  "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o"
+  "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o.d"
   "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o"
   "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_events/juce_events.mm.o.d"
   "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_graphics/juce_graphics.mm.o"

@@ -328,6 +328,20 @@ CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_devices/juce_audi
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm -o CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.s
 
+CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o: CMakeFiles/ExtasisVision.dir/flags.make
+CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o: _deps/juce-src/modules/juce_dsp/juce_dsp.mm
+CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o: CMakeFiles/ExtasisVision.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o -MF CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o.d -o CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o -c /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/juce_dsp.mm
+
+CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/juce_dsp.mm > CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.i
+
+CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/juce_dsp.mm -o CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.s
+
 # Object files for target ExtasisVision
 ExtasisVision_OBJECTS = \
 "CMakeFiles/ExtasisVision.dir/Source/PluginProcessor.cpp.o" \
@@ -347,7 +361,8 @@ ExtasisVision_OBJECTS = \
 "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_basics/juce_audio_basics.mm.o" \
 "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o" \
 "CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o" \
-"CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o"
+"CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o" \
+"CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o"
 
 # External object files for target ExtasisVision
 ExtasisVision_EXTERNAL_OBJECTS =
@@ -370,9 +385,10 @@ ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.
 ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_utils/juce_audio_utils.mm.o
 ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_formats/juce_audio_formats.mm.o
 ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_audio_devices/juce_audio_devices.mm.o
+ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o
 ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.dir/build.make
 ExtasisVision_artefacts/libExtasisVision_SharedCode.a: CMakeFiles/ExtasisVision.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Linking CXX static library ExtasisVision_artefacts/libExtasisVision_SharedCode.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Linking CXX static library ExtasisVision_artefacts/libExtasisVision_SharedCode.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/ExtasisVision.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ExtasisVision.dir/link.txt --verbose=$(VERBOSE)
 

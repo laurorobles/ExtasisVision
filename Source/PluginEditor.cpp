@@ -19,11 +19,27 @@ ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVis
     baseOctaveSlider.setLookAndFeel (&customLookAndFeel);
     addAndMakeVisible (baseOctaveSlider);
 
+    delayMixSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    delayMixSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    delayMixSlider.setTooltip ("CANTIDAD DE ECO (DELAY)");
+    delayMixSlider.setLookAndFeel (&customLookAndFeel);
+    addAndMakeVisible (delayMixSlider);
+
+    reverbMixSlider.setSliderStyle (juce::Slider::RotaryHorizontalVerticalDrag);
+    reverbMixSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    reverbMixSlider.setTooltip ("ATMÓSFERA (REVERB)");
+    reverbMixSlider.setLookAndFeel (&customLookAndFeel);
+    addAndMakeVisible (reverbMixSlider);
+
     // Attachments
     scanSpeedAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.apvts, "SCAN_SPEED", scanSpeedSlider);
     baseOctaveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
         audioProcessor.apvts, "BASE_OCTAVE", baseOctaveSlider);
+    delayMixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+        audioProcessor.apvts, "DELAY_MIX", delayMixSlider);
+    reverbMixAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+        audioProcessor.apvts, "REVERB_MIX", reverbMixSlider);
 
     // ComboBoxes
     engineModeComboBox.addItemList (juce::StringArray{"Escaner Analitico", "Sintetizador RGB"}, 1);
@@ -44,6 +60,8 @@ ExtasisVisionAudioProcessorEditor::~ExtasisVisionAudioProcessorEditor()
 {
     scanSpeedSlider.setLookAndFeel (nullptr);
     baseOctaveSlider.setLookAndFeel (nullptr);
+    delayMixSlider.setLookAndFeel (nullptr);
+    reverbMixSlider.setLookAndFeel (nullptr);
 }
 
 bool ExtasisVisionAudioProcessorEditor::isInterestedInFileDrag (const juce::StringArray& files)
@@ -90,11 +108,16 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (ExtasisDesign::metalChrome);
     g.setFont (ExtasisDesign::getFontBody());
     
-    // Textos debajo de los knobs (dividimos el footer en dos)
-    auto speedLabelArea = footerBounds.removeFromLeft(footerBounds.getWidth() / 2).removeFromBottom(30);
-    auto octaveLabelArea = footerBounds.removeFromBottom(30);
+    // Textos debajo de los knobs (dividimos el footer en 4)
+    int labelWidth = footerBounds.getWidth() / 4;
+    auto speedLabelArea = footerBounds.removeFromLeft(labelWidth).removeFromBottom(30);
+    auto octaveLabelArea = footerBounds.removeFromLeft(labelWidth).removeFromBottom(30);
+    auto delayLabelArea = footerBounds.removeFromLeft(labelWidth).removeFromBottom(30);
+    auto reverbLabelArea = footerBounds.removeFromBottom(30);
     g.drawFittedText ("SCAN SPEED", speedLabelArea, juce::Justification::centred, 1);
     g.drawFittedText ("BASE OCTAVE", octaveLabelArea, juce::Justification::centred, 1);
+    g.drawFittedText ("ECHO MIX", delayLabelArea, juce::Justification::centred, 1);
+    g.drawFittedText ("SPACE MIX", reverbLabelArea, juce::Justification::centred, 1);
 
     // Panel Principal (Imagen)
     bounds.reduce (0, ExtasisDesign::marginMedium);
@@ -141,13 +164,20 @@ void ExtasisVisionAudioProcessorEditor::resized()
 
     auto footerBounds = bounds.removeFromBottom(120);
     
-    auto leftKnob = footerBounds.removeFromLeft(footerBounds.getWidth() / 2);
-    auto rightKnob = footerBounds;
+    int knobWidth = footerBounds.getWidth() / 4;
+    auto knob1 = footerBounds.removeFromLeft(knobWidth);
+    auto knob2 = footerBounds.removeFromLeft(knobWidth);
+    auto knob3 = footerBounds.removeFromLeft(knobWidth);
+    auto knob4 = footerBounds;
     
     // Dejar espacio para las etiquetas de abajo
-    leftKnob.removeFromBottom(30);
-    rightKnob.removeFromBottom(30);
+    knob1.removeFromBottom(30);
+    knob2.removeFromBottom(30);
+    knob3.removeFromBottom(30);
+    knob4.removeFromBottom(30);
 
-    scanSpeedSlider.setBounds (leftKnob.reduced(10));
-    baseOctaveSlider.setBounds (rightKnob.reduced(10));
+    scanSpeedSlider.setBounds (knob1.reduced(10));
+    baseOctaveSlider.setBounds (knob2.reduced(10));
+    delayMixSlider.setBounds (knob3.reduced(10));
+    reverbMixSlider.setBounds (knob4.reduced(10));
 }

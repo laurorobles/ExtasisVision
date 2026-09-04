@@ -1391,5 +1391,53 @@ CMakeFiles/ExtasisVision.dir/Source/PluginEditor.cpp.o: \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_utils/players/juce_AudioProcessorPlayer.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_utils/audio_cd/juce_AudioCDBurner.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_audio_utils/audio_cd/juce_AudioCDReader.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/juce_dsp.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/21/include/arm_neon.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/21/include/arm_bf16.h \
+  /Library/Developer/CommandLineTools/usr/lib/clang/21/include/arm_vector_types.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/complex \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/native/juce_SIMDNativeOps_fallback.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/native/juce_SIMDNativeOps_neon.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/containers/juce_SIMDRegister.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/containers/juce_SIMDRegister_Impl.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_SpecialFunctions.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_Matrix.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_Phase.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_Polynomial.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_FastMathApproximations.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_LookupTable.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/maths/juce_LogRampedValue.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/containers/juce_AudioBlock.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_ProcessContext.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_ProcessorWrapper.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_ProcessorChain.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_ProcessorDuplicator.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_IIRFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_IIRFilter_Impl.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_FIRFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_StateVariableFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_FirstOrderTPTFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_Panner.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_DelayLine.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_Oversampling.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_BallisticsFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_LinkwitzRileyFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_DryWetMixer.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/processors/juce_StateVariableTPTFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/frequency/juce_FFT.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/frequency/juce_Convolution.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/frequency/juce_Windowing.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/filter_design/juce_FilterDesign.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Reverb.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Bias.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Gain.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_WaveShaper.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Oscillator.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_LadderFilter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Compressor.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_NoiseGate.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Limiter.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Phaser.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/build/_deps/juce-src/modules/juce_dsp/widgets/juce_Chorus.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h

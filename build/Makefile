@@ -882,6 +882,30 @@ _deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ExtasisVision.dir/build.make CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.s
 .PHONY : _deps/juce-src/modules/juce_data_structures/juce_data_structures.mm.s
 
+_deps/juce-src/modules/juce_dsp/juce_dsp.o: _deps/juce-src/modules/juce_dsp/juce_dsp.mm.o
+.PHONY : _deps/juce-src/modules/juce_dsp/juce_dsp.o
+
+# target to build an object file
+_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ExtasisVision.dir/build.make CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.o
+.PHONY : _deps/juce-src/modules/juce_dsp/juce_dsp.mm.o
+
+_deps/juce-src/modules/juce_dsp/juce_dsp.i: _deps/juce-src/modules/juce_dsp/juce_dsp.mm.i
+.PHONY : _deps/juce-src/modules/juce_dsp/juce_dsp.i
+
+# target to preprocess a source file
+_deps/juce-src/modules/juce_dsp/juce_dsp.mm.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ExtasisVision.dir/build.make CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.i
+.PHONY : _deps/juce-src/modules/juce_dsp/juce_dsp.mm.i
+
+_deps/juce-src/modules/juce_dsp/juce_dsp.s: _deps/juce-src/modules/juce_dsp/juce_dsp.mm.s
+.PHONY : _deps/juce-src/modules/juce_dsp/juce_dsp.s
+
+# target to generate assembly for a file
+_deps/juce-src/modules/juce_dsp/juce_dsp.mm.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/ExtasisVision.dir/build.make CMakeFiles/ExtasisVision.dir/_deps/juce-src/modules/juce_dsp/juce_dsp.mm.s
+.PHONY : _deps/juce-src/modules/juce_dsp/juce_dsp.mm.s
+
 _deps/juce-src/modules/juce_events/juce_events.o: _deps/juce-src/modules/juce_events/juce_events.mm.o
 .PHONY : _deps/juce-src/modules/juce_events/juce_events.o
 
@@ -1116,6 +1140,9 @@ help:
 	@echo "... _deps/juce-src/modules/juce_data_structures/juce_data_structures.o"
 	@echo "... _deps/juce-src/modules/juce_data_structures/juce_data_structures.i"
 	@echo "... _deps/juce-src/modules/juce_data_structures/juce_data_structures.s"
+	@echo "... _deps/juce-src/modules/juce_dsp/juce_dsp.o"
+	@echo "... _deps/juce-src/modules/juce_dsp/juce_dsp.i"
+	@echo "... _deps/juce-src/modules/juce_dsp/juce_dsp.s"
 	@echo "... _deps/juce-src/modules/juce_events/juce_events.o"
 	@echo "... _deps/juce-src/modules/juce_events/juce_events.i"
 	@echo "... _deps/juce-src/modules/juce_events/juce_events.s"

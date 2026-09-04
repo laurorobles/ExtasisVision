@@ -17,6 +17,12 @@ juce::AudioProcessorValueTreeState::ParameterLayout ExtasisVisionAudioProcessor:
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         "SCALE_MODE", "Escala", juce::StringArray{"Libre", "Cromatica", "Pentatonica Menor"}, 0));
 
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "DELAY_MIX", "Echo", 0.0f, 1.0f, 0.3f));
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        "REVERB_MIX", "Espacio", 0.0f, 1.0f, 0.4f));
+
     return { params.begin(), params.end() };
 }
 
@@ -63,9 +69,23 @@ void ExtasisVisionAudioProcessor::changeProgramName (int index, const juce::Stri
 
 void ExtasisVisionAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock) 
 { 
-    juce::ignoreUnused (sampleRate, samplesPerBlock); 
     currentPhase = 0.0f;
     filterState = 0.0f;
+
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getTotalNumOutputChannels();
+    if (spec.numChannels == 0) spec.numChannels = 2; // Seguro anticaídas
+
+    reverb.prepare (spec);
+    reverbParams.roomSize = 0.8f;
+    reverbParams.damping = 0.5f;
+    reverbParams.width = 1.0f;
+    
+    delayLine.prepare (spec);
+    delayLine.setMaximumDelayInSamples (sampleRate * 2.0); // Hasta 2 segundos max
+    delayLine.setDelay (sampleRate * 0.35f); // 350ms delay
 }
 void ExtasisVisionAudioProcessor::releaseResources() {}
 bool ExtasisVisionAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
@@ -102,6 +122,8 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
     int scaleMode = static_cast<int> (apvts.getRawParameterValue ("SCALE_MODE")->load());
     int octaveShift = static_cast<int> (apvts.getRawParameterValue ("BASE_OCTAVE")->load());
     float scanSpeed = apvts.getRawParameterValue ("SCAN_SPEED")->load();
+    float delayMix = apvts.getRawParameterValue ("DELAY_MIX")->load();
+    float reverbMix = apvts.getRawParameterValue ("REVERB_MIX")->load();
 
     int xPos = juce::jlimit (0, width - 1, (int)(scanPositionX * width));
     
@@ -179,7 +201,15 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         
         // Aplicar Filtro One-Pole si estamos en Modo RGB
         filterState += filterCoeff * (sampleValue - filterState);
-        float finalSample = (engineMode == 1) ? filterState : sampleValue;
+        float synthOutput = (engineMode == 1) ? filterState : sampleValue;
+
+        // Procesar Delay
+        float delayedSample = delayLine.popSample (0); // Leer de la cabeza (mono)
+        float delayFeedback = 0.4f;
+        // Empujar muestra original + feedback
+        delayLine.pushSample (0, synthOutput + delayedSample * delayFeedback); 
+        
+        float finalSample = synthOutput + delayedSample * delayMix;
 
         for (int channel = 0; channel < totalNumOutputChannels; ++channel)
             buffer.addSample (channel, i, finalSample);
@@ -192,6 +222,15 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         if (scanPositionX > 1.0f)
             scanPositionX -= 1.0f; // Ciclar la imagen
     }
+
+    // Procesar Reverb al final del bloque
+    reverbParams.wetLevel = reverbMix;
+    reverbParams.dryLevel = 1.0f - (reverbMix * 0.5f);
+    reverb.setParameters (reverbParams);
+
+    juce::dsp::AudioBlock<float> block (buffer);
+    juce::dsp::ProcessContextReplacing<float> context (block);
+    reverb.process (context);
 }
 
 bool ExtasisVisionAudioProcessor::hasEditor() const { return true; }
