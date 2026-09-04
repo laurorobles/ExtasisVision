@@ -870,6 +870,7 @@ CMakeFiles/ExtasisVision.dir/Source/PluginEditor.cpp.o: /Users/babyonk1/Desktop/
   /Library/Developer/CommandLineTools/usr/lib/clang/21/include/stdint.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginEditor.h \
   /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginProcessor.h \
+  /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h \
   ExtasisVision_artefacts/JuceLibraryCode/JuceHeader.h \
   _deps/juce-src/modules/juce_audio_basics/audio_play_head/juce_AudioPlayHead.h \
   _deps/juce-src/modules/juce_audio_basics/buffers/juce_AudioChannelSet.h \
@@ -33654,12 +33655,6 @@ _deps/juce-src/modules/juce_graphics/fonts/harfbuzz/hb-coretext.cc:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/MacMemory.h:
 
-_deps/juce-src/modules/juce_audio_processors/utilities/juce_AAXClientExtensions.cpp:
-
-_deps/juce-src/modules/juce_graphics/geometry/juce_Point.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/FixMath.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/Debugging.h:
 
 _deps/juce-src/modules/juce_audio_processors/utilities/juce_RangedAudioParameter.h:
@@ -35420,6 +35415,10 @@ _deps/juce-src/modules/juce_events/interprocess/juce_InterprocessConnectionServe
 
 _deps/juce-src/modules/juce_audio_basics/audio_play_head/juce_AudioPlayHead.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSSplitViewItemAccessoryViewController.h:
+
+/Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/Theme.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.h:
 
 /Users/babyonk1/Desktop/ExtasisRecords/ExtasisVision/Source/PluginProcessor.h:
@@ -35742,8 +35741,6 @@ _deps/juce-src/modules/juce_core/time/juce_RelativeTime.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_endian.h:
 
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSSplitViewItemAccessoryViewController.h:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__vector/comparison.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__thread/thread.h:
@@ -35913,6 +35910,10 @@ _deps/juce-src/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/m
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/type_traits:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__utility/auto_cast.h:
+
+_deps/juce-src/modules/juce_graphics/geometry/juce_Point.h:
+
+_deps/juce-src/modules/juce_audio_processors/utilities/juce_AAXClientExtensions.cpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/invocable.h:
 
@@ -37397,6 +37398,8 @@ _deps/juce-src/modules/juce_core/native/juce_CFHelpers_mac.h:
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_scalar.h:
 
 _deps/juce-src/modules/juce_core/misc/juce_ConsoleApplication.cpp:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Headers/FixMath.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/class_or_enum.h:
 

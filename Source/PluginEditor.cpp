@@ -36,6 +36,13 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (ExtasisDesign::metalChrome);
     g.setFont (ExtasisDesign::getFontBody());
     g.drawFittedText ("SYSTEM ONLINE. AWAITING IMAGE INPUT...", bounds, juce::Justification::centred, 1);
+
+    // Créditos del desarrollador
+    g.setColour (ExtasisDesign::metalDark.brighter(0.5f));
+    g.setFont (ExtasisDesign::getFontBody().withHeight(11.0f));
+    g.drawFittedText ("coded by @laurorobles", 
+                      getLocalBounds().reduced(ExtasisDesign::marginSmall), 
+                      juce::Justification::bottomRight, 1);
 }
 
 void ExtasisVisionAudioProcessorEditor::resized()
