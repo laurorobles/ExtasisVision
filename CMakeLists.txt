@@ -31,6 +31,8 @@ target_sources(ExtasisVision
         Source/PluginEditor.cpp
 )
 
+juce_generate_juce_header(ExtasisVision)
+
 target_compile_definitions(ExtasisVision
     PUBLIC
         JUCE_WEB_BROWSER=0

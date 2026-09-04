@@ -1,6 +1,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include "Theme.h"
+
 ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVisionAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
@@ -14,17 +16,26 @@ ExtasisVisionAudioProcessorEditor::~ExtasisVisionAudioProcessorEditor()
 
 void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // T-1000 aesthetic background (Dark metallic gray)
-    g.fillAll (juce::Colour::fromRGB(25, 25, 28));
+    // Usar las reglas de diseño para el fondo
+    g.fillAll (ExtasisDesign::bgBase);
 
-    // Futuristic HUD text color (Red or Cyan)
-    g.setColour (juce::Colour::fromRGB(255, 60, 60)); // Terminator Red
-    g.setFont (30.0f);
-    g.drawFittedText ("EXTASIS VISION", getLocalBounds().withSizeKeepingCentre(400, 50).translated(0, -200), juce::Justification::centred, 1);
+    // Dibujar un panel central siguiendo el sistema de márgenes rígidos
+    auto bounds = getLocalBounds().reduced (ExtasisDesign::marginLarge);
+    
+    g.setColour (ExtasisDesign::bgPanel);
+    g.fillRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius);
 
-    g.setColour (juce::Colours::grey);
-    g.setFont (15.0f);
-    g.drawFittedText ("SYSTEM ONLINE. AWAITING IMAGE INPUT...", getLocalBounds(), juce::Justification::centred, 1);
+    g.setColour (ExtasisDesign::metalDark);
+    g.drawRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius, 2.0f);
+
+    // Textos con tipografía y color del tema
+    g.setColour (ExtasisDesign::hudRed);
+    g.setFont (ExtasisDesign::getFontTitle());
+    g.drawFittedText ("EXTASIS VISION", bounds.removeFromTop(80), juce::Justification::centred, 1);
+
+    g.setColour (ExtasisDesign::metalChrome);
+    g.setFont (ExtasisDesign::getFontBody());
+    g.drawFittedText ("SYSTEM ONLINE. AWAITING IMAGE INPUT...", bounds, juce::Justification::centred, 1);
 }
 
 void ExtasisVisionAudioProcessorEditor::resized()
