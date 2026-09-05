@@ -1,5 +1,0 @@
-# Hashes of file build rules.
-c4235c9d6e501b79abce26117cae707b ExtasisVision_artefacts/JuceLibraryCode/ExtasisVision_AU/PkgInfo
-ed6ba470a3bad990583c9016d2968d2f ExtasisVision_artefacts/JuceLibraryCode/ExtasisVision_Standalone/PkgInfo
-e07303ada5f2e910cf993b496192b378 ExtasisVision_artefacts/JuceLibraryCode/ExtasisVision_VST3/PkgInfo
-dde89baf0cb2b5208bc9267091609db7 ExtasisVision_artefacts/JuceLibraryCode/JuceHeader.h
