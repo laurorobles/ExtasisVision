@@ -12,17 +12,20 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(juce)
 
 juce_add_plugin(ExtasisVision
+    PLUGIN_NAME "Extasis Vision"
     COMPANY_NAME "Extasis Records"
-    PLUGIN_MANUFACTURER_CODE ExtR
-    PLUGIN_CODE ExVi
+    PLUGIN_MANUFACTURER_CODE Extc
+    PLUGIN_CODE Exvs
     FORMATS Standalone VST3 AU
-    PRODUCT_NAME "ExtasisVision"
-    NEEDS_MIDI_INPUT TRUE
+    PRODUCT_NAME "Extasis Vision"
+    IS_SYNTH FALSE
+    NEEDS_MIDI_INPUT FALSE
     NEEDS_MIDI_OUTPUT FALSE
-    IS_SYNTH TRUE
+    IS_MIDI_EFFECT FALSE
+    EDITOR_WANTS_KEYBOARD_FOCUS TRUE
+    COPY_PLUGIN_AFTER_BUILD TRUE
     NEEDS_WEB_BROWSER FALSE
     NEEDS_CURL FALSE
-    COPY_PLUGIN_AFTER_BUILD TRUE
 )
 
 target_sources(ExtasisVision

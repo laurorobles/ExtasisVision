@@ -54,6 +54,9 @@ public:
     static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     
     std::atomic<bool> isLicensedCached { false };
+    std::atomic<bool> isExpired { false };
+    uint64_t samplesProcessed { 0 };
+    uint64_t maxSamplesForDemo { 0 };
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExtasisVisionAudioProcessor)

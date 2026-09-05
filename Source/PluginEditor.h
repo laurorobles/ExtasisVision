@@ -49,8 +49,11 @@ private:
     juce::TextEditor licenseInput;
     juce::TextButton activateButton;
     juce::HyperlinkButton gumroadLinkBtn { "BUY LICENSE", juce::URL ("http://laurorobles.gumroad.com") };
+    juce::TextButton licenseBadgeButton;
 
+    bool showLicenseModal { false };
     void checkLicense();
+    void updateLicenseVisibility();
 
     ExtasisDesign::ExtasisLookAndFeel customLookAndFeel;
 

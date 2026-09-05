@@ -104,6 +104,10 @@ void ExtasisVisionAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     delayLine.prepare (spec);
     delayLine.setMaximumDelayInSamples (sampleRate * 2.0); // Hasta 2 segundos max
     delayLine.setDelay (sampleRate * 0.35f); // 350ms delay
+    
+    maxSamplesForDemo = (uint64_t)(10.0 * 60.0 * sampleRate); // 10 minutos
+    samplesProcessed = 0;
+    isExpired = false;
 }
 void ExtasisVisionAudioProcessor::releaseResources() {}
 bool ExtasisVisionAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
@@ -131,8 +135,13 @@ void ExtasisVisionAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         
     if (!isLicensedCached.load())
     {
-        buffer.clear();
-        return;
+        samplesProcessed += buffer.getNumSamples();
+        if (samplesProcessed >= maxSamplesForDemo)
+        {
+            isExpired.store (true);
+            buffer.clear();
+            return;
+        }
     }
 
     if (!hasImage)

@@ -90,15 +90,32 @@ ExtasisVisionAudioProcessorEditor::ExtasisVisionAudioProcessorEditor (ExtasisVis
 
     addChildComponent (gumroadLinkBtn);
 
-    if (!audioProcessor.isLicensedCached.load())
-    {
-        licenseInput.setVisible (true);
-        activateButton.setVisible (true);
-        gumroadLinkBtn.setVisible (true);
-    }
+    addAndMakeVisible (licenseBadgeButton);
+    licenseBadgeButton.setButtonText ("DEMO");
+    licenseBadgeButton.setColour (juce::TextButton::buttonColourId, ExtasisDesign::hudRed.withAlpha(0.5f));
+    licenseBadgeButton.onClick = [this] {
+        showLicenseModal = !showLicenseModal;
+        updateLicenseVisibility();
+    };
+
+    updateLicenseVisibility();
 
     setSize (800, 600);
     startTimerHz (60); // 60 FPS repainting for the scanner
+}
+
+void ExtasisVisionAudioProcessorEditor::updateLicenseVisibility()
+{
+    bool isLicensed = audioProcessor.isLicensedCached.load();
+    bool isExpired = audioProcessor.isExpired.load();
+    
+    licenseBadgeButton.setVisible (!isLicensed);
+    
+    bool showModal = (!isLicensed && (showLicenseModal || isExpired));
+    licenseInput.setVisible (showModal);
+    activateButton.setVisible (showModal);
+    gumroadLinkBtn.setVisible (showModal);
+    repaint();
 }
 
 void ExtasisVisionAudioProcessorEditor::checkLicense()
@@ -106,10 +123,9 @@ void ExtasisVisionAudioProcessorEditor::checkLicense()
     if (LicenseManager::saveLicense (licenseInput.getText()))
     {
         audioProcessor.isLicensedCached.store (true);
-        licenseInput.setVisible (false);
-        activateButton.setVisible (false);
-        gumroadLinkBtn.setVisible (false);
-        repaint();
+        audioProcessor.isExpired.store (false);
+        showLicenseModal = false;
+        updateLicenseVisibility();
     }
     else
     {
@@ -225,14 +241,15 @@ void ExtasisVisionAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (ExtasisDesign::metalDark);
     g.drawRoundedRectangle (bounds.toFloat(), ExtasisDesign::panelCornerRadius, 2.0f);
 
-    if (!audioProcessor.isLicensedCached.load())
+    if (!audioProcessor.isLicensedCached.load() && (showLicenseModal || audioProcessor.isExpired.load()))
     {
         g.setColour (juce::Colours::black.withAlpha(0.8f));
         g.fillRect (getLocalBounds());
         
         g.setColour (ExtasisDesign::hudRed);
         g.setFont (24.0f);
-        g.drawText ("LICENSE REQUIRED", getLocalBounds().withSizeKeepingCentre(400, 200).withY(getLocalBounds().getCentreY() - 80), juce::Justification::centred);
+        juce::String msg = audioProcessor.isExpired.load() ? "DEMO EXPIRED" : "LICENSE REQUIRED";
+        g.drawText (msg, getLocalBounds().withSizeKeepingCentre(400, 200).withY(getLocalBounds().getCentreY() - 80), juce::Justification::centred);
     }
 
     // Créditos del desarrollador
@@ -281,9 +298,11 @@ void ExtasisVisionAudioProcessorEditor::resized()
     baseOctave2Slider.setBounds (kOct2.reduced(10));
     delayMixSlider.setBounds (kDel.reduced(10));
     reverbMixSlider.setBounds (kRev.reduced(10));
-
+    
     if (!audioProcessor.isLicensedCached.load())
     {
+        licenseBadgeButton.setBounds (bounds.getRight() - 70, bounds.getY(), 70, 24);
+        
         auto modalArea = getLocalBounds().withSizeKeepingCentre(400, 200);
         licenseInput.setBounds (modalArea.removeFromTop(40).reduced(0, 5));
         activateButton.setBounds (modalArea.removeFromTop(40).reduced(20, 5));
