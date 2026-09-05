@@ -14,6 +14,8 @@ FetchContent_MakeAvailable(juce)
 juce_add_plugin(ExtasisVision
     PLUGIN_NAME "Extasis Vision"
     COMPANY_NAME "Extasis Records"
+    COMPANY_EMAIL "laurorobles@gmail.com"
+    COMPANY_WEBSITE "http://laurorobles.gumroad.com"
     PLUGIN_MANUFACTURER_CODE Extc
     PLUGIN_CODE Exvs
     FORMATS Standalone VST3 AU
